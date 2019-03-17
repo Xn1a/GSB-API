@@ -22,8 +22,8 @@ if (!$idUtilisateur) {
     $reponse['estConnecte'] = false;
     $reponse['erreur'] = true;
     $reponse['message'] = 'Identifiants incorrectes';
-    die();
     echo json_encode($reponse);
+    die();
 }
 
 $reponse['erreur'] = false;
