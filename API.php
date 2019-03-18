@@ -7,7 +7,7 @@ header('Content-Type: application/json');
 $pdo = PdoGsb::getPdoGsb();
 $operation = $_GET['operation'];
 
-if (empty($_GET['login']) && empty($_GET['mdp'])) {
+if (empty($_GET['login']) || empty($_GET['mdp'])) {
     envoyerErreur("Vous n'etes pas autorisé à accéder à ce serveur");
     die();
 }
@@ -21,7 +21,7 @@ $idUtilisateur = testerConnexion($pdo, $_GET['login'], $_GET['mdp']);
 if (!$idUtilisateur) {
     $reponse['estConnecte'] = false;
     $reponse['erreur'] = true;
-    $reponse['message'] = 'Identifiants incorrectes';
+    $reponse['message'] = "Identifiants incorrectes";
     echo json_encode($reponse);
     die();
 }
@@ -36,7 +36,8 @@ switch ($operation) {
 
     case 'creerFraisHf':
         if (!isset($_POST['mois']) || !isset($_POST['libelle']) || !isset($_POST['date'])
-            || !isset($_POST['montant'])) {
+            || !isset($_POST['montant']) || empty($_POST['mois']) || empty($_POST['libelle'])
+            || empty($_POST['date']) || empty($_POST['montant'])) {
             envoyerErreur("Certains champs sont manquants");
             die();
         }

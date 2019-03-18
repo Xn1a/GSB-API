@@ -65,6 +65,7 @@ function envoyerErreur($message) {
     $reponse = array();
     $reponse['erreur'] = true;
     $reponse['message'] = $message;
+    $reponse['estConnecte'] = false;
     echo json_encode($reponse);
 }
 
