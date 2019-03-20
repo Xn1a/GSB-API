@@ -13,7 +13,6 @@
  * @link      http://www.php.net/manual/fr/book.pdo.php PHP Data Objects sur php.net
  */
 
-
 /**
  * Transforme une date au format français jj/mm/aaaa vers le format anglais
  * aaaa-mm-jj
@@ -38,21 +37,30 @@ function dateFrancaisVersAnglais($maDate)
  */
 function testerConnexion($pdo, $login, $mdp)
 {
-    $utilisateur = $pdo->getInfosUtilisateur($login, $mdp);
-    // Si les identifiants sont incorrectes ou qu'une erreur est survenue
-    if (!is_array($utilisateur)) {
-        return false;
-    } else {
-        // Si l'utilisateur est un comptable
-        if($utilisateur['fonction'] == 1) {
-            $reponse['estConnecte'] = false;
-            $reponse['erreur'] = true;
-            $reponse['message'] = 'Seuls les visiteurs peuvent utiliser cette API';
-            echo json_encode($reponse);
-            die();
+    $mdpHash = $pdo->getMdpUtilisateurPourLogin($login)['mdp'];
+    if ($mdpHash != null) {
+        // Si le mot de passe est correcte
+        if (password_verify($mdp, $mdpHash)) {
+            $utilisateur = $pdo->getInfosUtilisateurParLogin($login);
+            if (!is_array($utilisateur)) {
+                return false;
+            } else {
+                // Si l'utilisateur est un comptable
+                if ($utilisateur['fonction'] == 1) {
+                    $reponse['estConnecte'] = false;
+                    $reponse['erreur'] = true;
+                    $reponse['message'] = 'Seuls les visiteurs peuvent utiliser cette API';
+                    echo json_encode($reponse);
+                    die();
+                }
+                return $utilisateur['id'];
+            }
+        } else {
+            return false;
         }
+    } else {
+        return false;
     }
-    return $utilisateur['id'];
 }
 
 /**
@@ -61,7 +69,8 @@ function testerConnexion($pdo, $login, $mdp)
  * @param String $message
  * @return void
  */
-function envoyerErreur($message) {
+function envoyerErreur($message)
+{
     $reponse = array();
     $reponse['erreur'] = true;
     $reponse['message'] = $message;
@@ -86,4 +95,3 @@ function chercheDansAssoc($valeur, $cle, $assoc)
     }
     return null;
 }
-?>
