@@ -157,11 +157,11 @@ class PdoGsb
     }
 
      /**
-     * Retourne le mot de passe haché de l'utilisateur
+     * Retourne le mot de passe hashé de l'utilisateur
      *
      * @param String $login Le login de l'utilisateur
      *
-     * @return Array Le mot de passe haché (tableau associatif)
+     * @return Array Le mot de passe hashé (tableau associatif)
      */
     public function getMdpUtilisateurPourLogin($login)
     {
